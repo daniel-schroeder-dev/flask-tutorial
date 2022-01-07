@@ -10,37 +10,39 @@ class User:
         self.password = password
 
     @classmethod
+    @property
+    def db(self):
+        return get_db()
+
+    @classmethod
     def load_from_username(cls, username):
-        db = get_db()
         query = """
             SELECT * FROM user WHERE username = ?;
         """
-        if (user := db.execute(query, (username,)).fetchone()) is None:
+        if (user := cls.db.execute(query, (username,)).fetchone()) is None:
             return None
         return cls(**user)
 
     @classmethod
     def load_from_id(cls, user_id):
-        db = get_db()
         query = """
             SELECT * FROM user WHERE id = ?;
         """
-        if (user := db.execute(query, (user_id,)).fetchone()) is None:
+        if (user := cls.db.execute(query, (user_id,)).fetchone()) is None:
             return None
         return cls(**user)
 
     @classmethod
     def create_user(cls, username, password):
-        db = get_db()
         query = """
             INSERT INTO user (username, password) VALUES (?, ?);
         """
         try:
             hashed_password = generate_password_hash(password)
-            user_id = db.execute(query, (username, hashed_password)).lastrowid
-            db.commit()
+            user_id = cls.db.execute(query, (username, hashed_password)).lastrowid
+            cls.db.commit()
             return cls(user_id, username, hashed_password)
-        except db.IntegrityError:
+        except cls.db.IntegrityError:
             raise Exception(f"{username} is already registered!")
 
     def __repr__(self):

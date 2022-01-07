@@ -25,4 +25,8 @@ def create_app(test_config=None):
 
     app.register_blueprint(auth.bp)
 
+    from flaskr import pages
+
+    app.register_blueprint(pages.bp)
+
     return app
