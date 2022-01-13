@@ -23,22 +23,19 @@ def close_db(err=None):
         db.close()
 
 
-def init_db():
+@click.command("rebuild-db")
+# https://flask.palletsprojects.com/en/2.0.x/cli/#application-context
+@with_appcontext
+def rebuild_db():
+    """Runs schema.sql to rebuild the db."""
     db = get_db()
 
     with current_app.open_resource("schema.sql", mode="rt") as sql_file:
         db.executescript(sql_file.read())
 
-
-@click.command("init-db")
-# https://flask.palletsprojects.com/en/2.0.x/cli/#application-context
-@with_appcontext
-def init_db_command():
-    """Runs schema.sql to rebuild the db."""
-    init_db()
     click.echo("Initialized the database.")
 
 
 def init_app(app):
     app.teardown_appcontext(close_db)
-    app.cli.add_command(init_db_command)
+    app.cli.add_command(rebuild_db)

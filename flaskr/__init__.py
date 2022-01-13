@@ -7,7 +7,7 @@ def create_app(test_config=None):
     from flaskr import db
     from flaskr import auth
     from flaskr import pages
-    
+
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY="dev",
