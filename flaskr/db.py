@@ -34,6 +34,7 @@ def init_db():
 # https://flask.palletsprojects.com/en/2.0.x/cli/#application-context
 @with_appcontext
 def init_db_command():
+    """Runs schema.sql to rebuild the db."""
     init_db()
     click.echo("Initialized the database.")
 
