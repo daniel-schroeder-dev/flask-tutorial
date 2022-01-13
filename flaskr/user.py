@@ -4,14 +4,14 @@ from flaskr.db import get_db
 
 
 class User:
-    def __init__(self, id, username, password):
-        self.id = id
+    def __init__(self, user_id, username, password):
+        self.user_id = user_id
         self.username = username
         self.password = password
 
     @classmethod
     @property
-    def db(self):
+    def db(cls):
         return get_db()
 
     @classmethod
@@ -26,7 +26,7 @@ class User:
     @classmethod
     def load_from_id(cls, user_id):
         query = """
-            SELECT * FROM user WHERE id = ?;
+            SELECT * FROM user WHERE user_id = ?;
         """
         if (user := cls.db.execute(query, (user_id,)).fetchone()) is None:
             return None
@@ -42,8 +42,8 @@ class User:
             user_id = cls.db.execute(query, (username, hashed_password)).lastrowid
             cls.db.commit()
             return cls(user_id, username, hashed_password)
-        except cls.db.IntegrityError:
-            raise Exception(f"{username} is already registered!")
+        except cls.db.IntegrityError as db_error:
+            raise cls.db.Error(f"{username} is already registered!") from db_error
 
     def __repr__(self):
-        return f"<User username={self.username} id={self.id}>"
+        return f"<User username={self.username} user_id={self.user_id}>"

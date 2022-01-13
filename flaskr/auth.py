@@ -1,4 +1,5 @@
 import functools
+import sqlite3
 
 from flask import (
     Blueprint,
@@ -41,7 +42,7 @@ def register():
         if error is None:
             try:
                 User.create_user(username, password)
-            except Exception as err:
+            except sqlite3.Error as err:
                 error = err
             else:
                 return redirect(url_for("auth.login"))
@@ -66,7 +67,7 @@ def login():
 
         if error is None:
             session.clear()
-            session["user_id"] = user.id
+            session["user_id"] = user.user_id
             return redirect(url_for("pages.home"))
 
         flash(error)
@@ -82,10 +83,10 @@ def logout():
 
 def login_required(view_func):
     @functools.wraps(view_func)
-    def wrapped_view(**kwargs):
+    def wrapped_view(*args, **kwargs):
         if g.user is None:
             return redirect(url_for("auth.login"))
 
-        return view_func(**kwargs)
+        return view_func(*args, **kwargs)
 
     return wrapped_view
