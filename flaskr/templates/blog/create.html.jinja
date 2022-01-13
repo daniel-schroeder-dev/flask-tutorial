@@ -1,0 +1,15 @@
+{% extends "base.html.jinja" %}
+
+{% block header %}
+    <h1> {% block title %} New Post {% endblock %} </h1>
+{% endblock %}
+
+{% block content %}
+    <form method="POST" action="{{ url_for('blog.create') }}">
+        <label for="title">Title</label>
+        <input id="title" name="title" required />
+        <label for="body">Body</label>
+        <textarea id="body" name="body"></textarea>
+        <button>Create Post</button>
+    </form>
+{% endblock %}
