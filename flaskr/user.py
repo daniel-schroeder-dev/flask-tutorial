@@ -37,13 +37,14 @@ class User:
         query = """
             INSERT INTO user (username, password) VALUES (?, ?);
         """
+        hashed_password = generate_password_hash(password)
         try:
-            hashed_password = generate_password_hash(password)
             user_id = cls.db.execute(query, (username, hashed_password)).lastrowid
-            cls.db.commit()
-            return cls(user_id, username, hashed_password)
         except cls.db.IntegrityError as db_error:
             raise cls.db.Error(f"{username} is already registered!") from db_error
+        else:
+            cls.db.commit()
+            return cls(user_id, username, hashed_password)
 
     def __repr__(self):
         return f"<User username={self.username} user_id={self.user_id}>"
