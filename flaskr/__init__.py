@@ -4,6 +4,10 @@ from flask import Flask
 
 
 def create_app(test_config=None):
+    from flaskr import db
+    from flaskr import auth
+    from flaskr import pages
+    
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY="dev",
@@ -17,16 +21,9 @@ def create_app(test_config=None):
 
     os.makedirs(app.instance_path, exist_ok=True)
 
-    from flaskr import db
-
     db.init_app(app)
 
-    from flaskr import auth
-
     app.register_blueprint(auth.bp)
-
-    from flaskr import pages
-
     app.register_blueprint(pages.bp)
 
     return app
