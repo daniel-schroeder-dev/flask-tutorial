@@ -53,3 +53,13 @@ class Post:
             ORDER BY created_at DESC;
         """
         return [cls(**post) for post in get_db().execute(query).fetchall()]
+
+    @classmethod
+    def update_post(cls: Type[P], post_id: int, title: str, body: str):
+        query = """
+            UPDATE post
+            SET title = ?, body = ?
+            WHERE post_id = ?;
+        """
+        get_db().execute(query, (title, body, post_id))
+        get_db().commit()

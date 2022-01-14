@@ -1,0 +1,20 @@
+{% extends "base.html.jinja" %}
+
+{% block header %}
+    <h1> {% block title %} Edit "{{ post.title }}" {% endblock %} </h1>
+{% endblock %}
+
+{% block content %}
+    <form method="POST">
+        <label for="title">Title</label>
+        <input id="title" name="title" value="{{ request.form.title or post.title }}" required />
+        <label for="body">Body</label>
+        <textarea id="body" name="body">{{ request.form.body or post.body }}</textarea>
+        <button>Save Post</button>
+    </form>
+    <hr />
+    <form action="{{ url_for('blog.delete', post_id=post.post_id) }}" method="POST">
+        <button onclick="return confirm('Are you sure?');">Delete Post</button>
+    </form>
+
+{% endblock %}

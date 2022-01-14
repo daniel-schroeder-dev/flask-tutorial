@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from sqlite3 import IntegrityError, Error
+import sqlite3
 from typing import TypeVar, Type, Union
 
 from werkzeug.security import generate_password_hash
@@ -41,8 +41,8 @@ class User:
         hashed_password = generate_password_hash(password)
         try:
             user_id = get_db().execute(query, (username, hashed_password)).lastrowid
-        except IntegrityError as db_error:
-            raise Error(f"{username} is already registered!") from db_error
+        except sqlite3.IntegrityError as db_error:
+            raise sqlite3.Error(f"{username} is already registered!") from db_error
         else:
             get_db().commit()
         return cls(user_id=user_id, username=username, password=hashed_password)
