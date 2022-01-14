@@ -14,7 +14,7 @@ from flask import (
 
 from werkzeug.security import check_password_hash
 
-from flaskr.user import User
+from flaskr.models.user import User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -68,7 +68,7 @@ def login():
         if error is None:
             session.clear()
             session["user_id"] = user.user_id
-            return redirect(url_for("index"))
+            return redirect(url_for("blog.index"))
 
         flash(error)
 
@@ -78,7 +78,7 @@ def login():
 @bp.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("index"))
+    return redirect(url_for("blog.index"))
 
 
 def login_required(view_func):
