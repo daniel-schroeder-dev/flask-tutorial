@@ -1,0 +1,28 @@
+li {
+    list-style-type: none;
+}
+
+nav > ul > li {
+    display: inline-block;
+}
+
+nav > ul {
+    padding-left: 0;
+}
+
+textarea {
+    margin-bottom: 0;
+}
+
+input, textarea {
+    width: 400px;
+}
+
+label {
+    display: inline-block;
+    width: 43px;
+}
+
+form {
+    padding: 24px;
+}

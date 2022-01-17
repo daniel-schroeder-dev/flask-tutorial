@@ -1,5 +1,6 @@
 import functools
 import sqlite3
+from typing import Union
 
 from flask import (
     Blueprint,
@@ -14,14 +15,14 @@ from flask import (
 
 from werkzeug.security import check_password_hash
 
-from flaskr.user import User
+from flaskr.models.user import User
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
 @bp.before_app_request
 def load_logged_in_user():
-    user_id = session.get("user_id")
+    user_id: int = session.get("user_id")
 
     if user_id is None:
         g.user = None
@@ -32,9 +33,9 @@ def load_logged_in_user():
 @bp.route("/register", methods=("GET", "POST"))
 def register():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        error = None
+        username: str = request.form["username"]
+        password: str = request.form["password"]
+        error: Union[str, None] = None
 
         if not username or not password:
             error = "A username and password are required"
@@ -55,10 +56,10 @@ def register():
 @bp.route("/login", methods=("GET", "POST"))
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        error = None
-        user = User.load_from_username(username)
+        username: str = request.form["username"]
+        password: str = request.form["password"]
+        error: Union[str, None] = None
+        user: Union[User, None] = User.load_from_username(username)
 
         if user is None:
             error = "Invalid username!"
@@ -68,7 +69,7 @@ def login():
         if error is None:
             session.clear()
             session["user_id"] = user.user_id
-            return redirect(url_for("pages.home"))
+            return redirect(url_for("blog.index"))
 
         flash(error)
 
@@ -78,7 +79,7 @@ def login():
 @bp.route("/logout")
 def logout():
     session.clear()
-    return redirect(url_for("pages.home"))
+    return redirect(url_for("blog.index"))
 
 
 def login_required(view_func):
