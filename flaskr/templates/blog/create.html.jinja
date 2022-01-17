@@ -6,10 +6,14 @@
 
 {% block content %}
     <form method="POST" action="{{ url_for('blog.create') }}">
-        <label for="title">Title</label>
-        <input id="title" name="title" value="{{ request.form.title }}" required />
-        <label for="body">Body</label>
-        <textarea id="body" name="body" required>{{ request.form.body }}</textarea>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input id="title" name="title" value="{{ request.form.title }}" required />
+        </div>
+        <div class="form-group">
+            <label for="body">Body</label>
+            <textarea id="body" name="body" required>{{ request.form.body }}</textarea>
+        </div>
         <button>Create Post</button>
     </form>
 {% endblock %}

@@ -35,14 +35,15 @@ class User:
 
     @classmethod
     def create_user(cls: Type[U], username: str, password: str) -> U:
+        db = get_db()
         query = """
             INSERT INTO user (username, password) VALUES (?, ?);
         """
         hashed_password = generate_password_hash(password)
         try:
-            user_id = get_db().execute(query, (username, hashed_password)).lastrowid
+            user_id = db.execute(query, (username, hashed_password)).lastrowid
         except sqlite3.IntegrityError as db_error:
             raise sqlite3.Error(f"{username} is already registered!") from db_error
         else:
-            get_db().commit()
+            db.commit()
         return cls(user_id=user_id, username=username, password=hashed_password)

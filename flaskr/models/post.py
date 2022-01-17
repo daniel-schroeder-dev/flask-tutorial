@@ -33,12 +33,13 @@ class Post:
 
     @classmethod
     def create_post(cls: Type[P], title: str, body: str, user_id: int):
+        db = get_db()
         query = """
             INSERT INTO post (title, body, author_id)
             VALUES (?, ?, ?);
         """
-        get_db().execute(query, (title, body, user_id))
-        get_db().commit()
+        db.execute(query, (title, body, user_id))
+        db.commit()
 
     @classmethod
     def load_all_posts(cls: Type[P]) -> List[P]:
@@ -56,10 +57,21 @@ class Post:
 
     @classmethod
     def update_post(cls: Type[P], post_id: int, title: str, body: str):
+        db = get_db()
         query = """
             UPDATE post
             SET title = ?, body = ?
             WHERE post_id = ?;
         """
-        get_db().execute(query, (title, body, post_id))
-        get_db().commit()
+        db.execute(query, (title, body, post_id))
+        db.commit()
+
+    @classmethod
+    def delete_post(cls: Type[P], post_id: int):
+        db = get_db()
+        query = """
+            DELETE FROM post
+            WHERE post_id = ?;
+        """
+        db.execute(query, (post_id,))
+        db.commit()

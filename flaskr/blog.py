@@ -77,7 +77,10 @@ def update(post_id: int):
     return render_template("blog/update.html.jinja", post=post)
 
 
-@bp.route("/delete/<int:post_id>", methods=("POST",))
+@bp.route("/delete/<int:post_id>", methods=("DELETE",))
 @login_required
 def delete(post_id: int):
-    return "delete"
+    # Only calling this to show aborts if post is invalid
+    get_post(post_id)
+    Post.delete_post(post_id)
+    return redirect(url_for("blog.index"))
